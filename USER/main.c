@@ -5,32 +5,32 @@
 #include "pwm.h"
 #include "timer.h"
 
-#include "hcsr04.h"//²â¾à
+#include "hcsr04.h"//ï¿½ï¿½ï¿½ï¿½
 #include "grub.h"//×¥È¡
-#include "capstan.h"//Ö÷¶¯ÂÖ
-#include "trace.h"//Ñ°¼£
-#include "brake.h"//Í£³µ
-#include "uart6.h"//rfidÊ¹ÓÃ
+#include "capstan.h"//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+#include "trace.h"//Ñ°ï¿½ï¿½
+#include "brake.h"//Í£ï¿½ï¿½
+#include "uart6.h"//rfidÊ¹ï¿½ï¿½
 #include "rfid.h"
 
 int main(void)
-{ 
+{
 	float distance=0;
 	Gpio_Init();
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);//ÉèÖÃÏµÍ³ÖÐ¶ÏÓÅÏÈ¼¶·Ö×é2
-	delay_init(168);  //³õÊ¼»¯ÑÓÊ±º¯Êý
-	uart_init(115200);//À¶ÑÀ
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);//ï¿½ï¿½ï¿½ï¿½ÏµÍ³ï¿½Ð¶ï¿½ï¿½ï¿½ï¿½È¼ï¿½ï¿½ï¿½ï¿½ï¿½2
+	delay_init(168);  //ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½
+	uart_init(115200);//ï¿½ï¿½ï¿½ï¿½
   uart6_init(19200);//rfid
-  RFID_Init();//rfid	
-	Hcsr04Init();//³¬Éù²¨	
-  grub_init();//×¥ÊÖ
-	TIM4_PWM_Init(20000-1,84-1);	//²½½øµç»ú 
-  //Trace_Init();	
-	
-  //UMoto_Init();	//Ö÷¶¯ÂÖÓÉÓÚµçÔ´Î´µ½¸éÖÃ
+  RFID_Init();//rfid
+	Hcsr04Init();//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  grub_init();//×¥ï¿½ï¿½
+	TIM4_PWM_Init(20000-1,84-1);	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  //Trace_Init();
+
+  //UMoto_Init();	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½Ô´Î´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
   //UMoto_Control();
 	while(1){
-		//printf("ok\n");
+		printf("Hello,World\n");
 		Grab(3);
-	}	
+	}
 }
