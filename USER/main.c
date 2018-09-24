@@ -33,6 +33,6 @@ int main(void)
 		printf(" Hello,World\n");
 		printf("Why?\n");
 		printf("new\n");
-		Grab(3);
+		Grab(3);//编码方式注意一下
 	}
 }
