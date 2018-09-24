@@ -10,7 +10,19 @@
 
 u16 msHcCount=0;
 
-//TIM5&&TIM9
+
+#define HCSR04_2_PORT GPIOA
+#define HCSR04_2_CLK RCC_AHB1Periph_GPIOA
+#define HCSR04_2_TRIG GPIO_Pin_3
+#define HCSR04_2_ECHO GPIO_Pin_2
+
+#define TRIG_2_Send PAout(3)
+#define ECHO_2_Reci PAin(2)
+
+u16 msHcCount_2=0;
+
+
+//TIM5
 
 void Hcsr04Init()
 {
@@ -27,7 +39,17 @@ void Hcsr04Init()
 	GPIO_Init(GPIOA,&GPIO_InitStructure);
 	
 	
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM5,ENABLE);  ///使能TIM3时钟
+	//echo_2
+	GPIO_InitStructure.GPIO_Pin=GPIO_Pin_2;
+	GPIO_InitStructure.GPIO_Mode=GPIO_Mode_IN;
+	GPIO_Init(GPIOA,&GPIO_InitStructure);
+	//trig_2
+	GPIO_InitStructure.GPIO_Pin=GPIO_Pin_3;
+	GPIO_InitStructure.GPIO_Mode=GPIO_Mode_OUT;
+	GPIO_Init(GPIOA,&GPIO_InitStructure);
+	
+	
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM5,ENABLE);  ///使能TIM5时钟
 	TIM_DeInit(TIM5);
   TIM_TimeBaseStructure.TIM_Period = 5000-1; 	//自动重装载值
 	TIM_TimeBaseStructure.TIM_Prescaler=8400-1;  //定时器分频
@@ -61,6 +83,7 @@ void TIM5_IRQHandler(void)
 	{
 		TIM_ClearITPendingBit(TIM5,TIM_IT_Update);
 		msHcCount++;
+		msHcCount_2++;
 	}
 }
 
@@ -68,6 +91,7 @@ static void OpenTimerForHc()        //
 {
 	TIM_SetCounter(TIM5,0);
 	msHcCount=0;
+	msHcCount_2=0;
 	TIM_Cmd(TIM5,ENABLE);
 }
  
@@ -80,6 +104,16 @@ u32 GetEchoTimer(void)
 {
 	u32 t=0;
 	t=msHcCount*1000;
+	t+=TIM_GetCounter(TIM5);
+	TIM5->CNT=0;
+	delay_ms(50);
+	return t;
+}
+
+u32 GetEchoTimer_2(void)
+{
+	u32 t=0;
+	t=msHcCount_2*1000;
 	t+=TIM_GetCounter(TIM5);
 	TIM5->CNT=0;
 	delay_ms(50);
@@ -102,6 +136,30 @@ float Hcsr04GetLength(void )
 		while(ECHO_Reci==1);
 		CloseTimerForHc();
 		t=GetEchoTimer();
+		lengthTemp=((float)t/58.0);
+		sum=lengthTemp+sum;
+		i=i+1;
+	}
+	lengthTemp=sum/5;
+	return lengthTemp;
+}
+
+float Hcsr04GetLength_2(void )
+{
+	u32 t=0;
+	int i=0;
+	float lengthTemp=0;
+	float sum=0;
+	while(i!=5)
+	{
+		TRIG_2_Send=1;
+		delay_us(20);
+		TRIG_2_Send=0;
+		while(ECHO_2_Reci==0);
+		OpenTimerForHc();
+		while(ECHO_2_Reci==1);
+		CloseTimerForHc();
+		t=GetEchoTimer_2();
 		lengthTemp=((float)t/58.0);
 		sum=lengthTemp+sum;
 		i=i+1;

@@ -12,5 +12,6 @@ void hcsr04_NVIC();
 void TIM5_IRQHandler(void);
 u32 GetEchoTimer(void);
 float Hcsr04GetLength(void);
+float Hcsr04GetLength_2(void);
 
 #endif
